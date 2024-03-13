@@ -1,6 +1,6 @@
 "use client"
 
-import {useState} from "react"
+import {useEffect, useState} from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import {formSchema, IFormSchema} from "@/lib/validation/multistep"
@@ -50,15 +50,12 @@ export default function ProfileForm() {
 
   const steps = {
     1: {
-      component: PartOne,
       fields: ["firstName", "lastName", "about"],
     },
     2: {
-      component: PartTwo,
       fields: ["city", "country", "zip"],
     },
     3: {
-      component: PartThree,
       fields: ["whereDidYouHear", "subscribe"],
     },
   }
@@ -66,9 +63,14 @@ export default function ProfileForm() {
 
 
     const handleFormPosition = async(position: number) => {
+
+      if(position === -1) {
+        setFormPosition((prev)=>prev+position)
+        return;
+      }
+
       startTransition(async () => {
         await new Promise((resolve) => setTimeout(resolve, 300));
-
         const isValid = await validateFields(steps[formPosition as IFormPosition].fields as IFormKeys);
         if(!isValid) return;
 
@@ -85,7 +87,9 @@ export default function ProfileForm() {
         <ProgressBar formPosition={formPosition} />
 
         <section className="space-y-8">
-          {steps[formPosition as IFormPosition].component({form})}
+          {formPosition === 1 && <PartOne form={form} />}
+          {formPosition === 2 && <PartTwo form={form} />}
+          {formPosition === 3 && <PartThree form={form} />}
         </section>
 
         <div className="flex justify-between">
