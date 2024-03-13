@@ -47,7 +47,6 @@ export default function ProfileForm() {
     return errors.length === 0;
   };
 
-
   const steps = {
     1: {
       fields: ["firstName", "lastName", "about"],
@@ -60,15 +59,11 @@ export default function ProfileForm() {
     },
   }
 
-
-
     const handleFormPosition = async(position: number) => {
-
       if(position === -1) {
         setFormPosition((prev)=>prev+position)
         return;
       }
-
       startTransition(async () => {
         await new Promise((resolve) => setTimeout(resolve, 300));
         const isValid = await validateFields(steps[formPosition as IFormPosition].fields as IFormKeys);
